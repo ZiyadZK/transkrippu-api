@@ -3,6 +3,7 @@ const { F_Akun_getAll, F_Akun_create, F_Akun_update, F_Akun_delete, F_Akun_get }
 const { validateBody } = require('../middleware')
 const { decryptData, encryptData } = require('../libs/crypto')
 const { F_Mata_Pelajaran_getAll, F_Mata_Pelajaran_create, F_Mata_Pelajaran_update, F_Mata_Pelajaran_delete } = require('../database/function/F_Mata_Pelajaran')
+const { F_Nilai_getAll, F_Nilai_get, F_Nilai_create, F_Nilai_update, F_Nilai_delete } = require('../database/function/F_Nilai')
 
 const route_v1 = express.Router()
 
@@ -255,6 +256,131 @@ const route_v1 = express.Router()
             })
         }
         
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+// NILAI
+.get('/v1/data/nilai', async (req, res) => {
+    try {
+        
+        const response = await F_Nilai_getAll()
+        if(response.success) {
+            return res.status(200).json({
+                data: response.data
+            })
+        }
+
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.get('/v1/data/nilai/:nis', async (req, res) => {
+    try {
+        const nis = req.params.nis
+        const response = await F_Nilai_get(nis)
+        if(response.success) {
+            return res.status(200).json({
+                data: response.data
+            })
+        }
+
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.post('/v1/data/nilai', validateBody, async (req, res) => {
+    try {
+        const payload = await req.body
+
+        const response = await F_Nilai_create(payload)
+        if(response.success) {
+            return res.status(200).json({
+                message: 'Berhasil membuat data nilai baru'
+            })
+        }
+
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.put('/v1/data/nilai', validateBody, async (req, res) => {
+    try {
+        const payload = await req.body.payload
+        const id_nilai = await req.body.id_nilai
+
+        const response = await F_Nilai_update(id_nilai, payload)
+        if(response.success) {
+            return res.status(200).json({
+                message: 'Berhasil mengubah data nilai'
+            })
+        }
+
+        return res.status(400).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            error_message: response.message,
+            tipe: 'DATABASE ERROR'
+        })
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message: 'Terdapat error saat memproses data, hubungi Administrator data',
+            tipe: 'INTERNAL SERVER'
+        })
+    }
+})
+
+.delete('/v1/data/nilai', validateBody, async (req, res) => {
+    try {
+        const id_nilai = await req.body.id_nilai
+
+        const response = await F_Nilai_delete(id_nilai)
+        if(response.success) {
+            return res.status(200).json({
+                message: 'Berhasil menghapus data nilai'
+            })
+        }
+
         return res.status(400).json({
             message: 'Terdapat error saat memproses data, hubungi Administrator data',
             error_message: response.message,

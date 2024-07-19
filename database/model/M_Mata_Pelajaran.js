@@ -42,4 +42,7 @@ const M_Mata_Pelajaran = db.define('data_mapel', {
     tableName: 'data_mapel'
 })
 
+M_Mata_Pelajaran.hasMany(M_Nilai, { foreignKey: 'fk_id_mapel', sourceKey: 'id_mapel', as: 'mata_pelajaran'})
+M_Nilai.belongsTo(M_Mata_Pelajaran, { foreignKey: 'fk_id_mapel', targetKey: 'id_mapel'})
+
 module.exports = M_Mata_Pelajaran
